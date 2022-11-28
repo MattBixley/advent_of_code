@@ -1,6 +1,6 @@
 library(tidyverse)
 
-input <- scan("solutions_2021/day07_input.txt", sep = ",")
+input <- scan("2021/day07_input.txt", sep = ",")
 
 # part 1 submitted
 

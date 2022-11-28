@@ -1,7 +1,7 @@
 library(tidyverse)
 library(glue)
 
-input <- read_lines("solutions_2021/day10_input.txt")
+input <- read_lines("2021/day10_input.txt")
 
 corruption_values <- c(")" = 3, "]" = 57, "}" = 1197, ">" = 25137)
 
