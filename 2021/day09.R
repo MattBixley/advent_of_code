@@ -2,7 +2,7 @@ library(tidyverse)
 library(glue)
 library(igraph)
 
-input <- tibble(value = read_lines("solutions_2021/day09_input.txt")) %>% 
+input <- tibble(value = read_lines("2021/day09_input.txt")) %>% 
   mutate(x = 1:n()) %>% 
   separate_rows(value, sep = "", convert = TRUE) %>% 
   filter(!is.na(value)) %>% 
