@@ -1,6 +1,6 @@
 library(tidyverse)
 
-input <- read_lines("solutions_2015/input01.txt")
+input <- read_lines("2015/input01.txt")
 
 input %>% 
   str_split("") %>% .[[1]] %>% 

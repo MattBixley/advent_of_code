@@ -1,6 +1,6 @@
 library(tidyverse)
 
-steps <- readLines("solutions_2016/input01.txt") %>% str_split(", ") %>% pluck(1)
+steps <- readLines("2016/input01.txt") %>% str_split(", ") %>% pluck(1)
 
 directions = list(
   'n' = c(0, 1),

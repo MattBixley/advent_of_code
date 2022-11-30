@@ -14,7 +14,7 @@ calculate_checksum <- function(room) {
 
 # part 1
 
-tibble(x = read_lines("solutions_2016/input04.txt")) %>% 
+tibble(x = read_lines("2016/input04.txt")) %>% 
   extract(x, into = c("room", "id", 'checksum'), regex = "([a-z-]+)(\\d+)\\[([a-z]+)\\]", convert = TRUE) %>% 
   rowwise() %>% 
   filter(
@@ -40,7 +40,7 @@ decrypt <- function(room, id) {
     str_c(collapse = "")
 }
 
-room_names <- tibble(x = read_lines("solutions_2016/input04.txt")) %>% 
+room_names <- tibble(x = read_lines("input04.txt")) %>% 
   extract(x, into = c("room", "id", 'checksum'), regex = "([a-z-]+)(\\d+)\\[([a-z]+)\\]", convert = TRUE) %>% 
   rowwise() %>% 
   filter(

@@ -1,6 +1,6 @@
 library(tidyverse)
 
-input <- tibble(x = read_lines("solutions_2016/input03.txt")) %>% 
+input <- tibble(x = read_lines("2016/input03.txt")) %>% 
   separate(x, c('dummy', 'a', 'b', 'c'), convert = TRUE) %>% 
   select(-dummy) 
 

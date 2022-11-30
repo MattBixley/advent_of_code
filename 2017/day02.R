@@ -1,6 +1,6 @@
 library(tidyverse)
 
-input <- tibble(x = read_lines("solutions_2017/day02_input.txt")) %>% 
+input <- tibble(x = read_lines("2017/day02_input.txt")) %>% 
   mutate(row_id = 1:n()) %>% 
   separate_rows(x, convert = TRUE) 
 

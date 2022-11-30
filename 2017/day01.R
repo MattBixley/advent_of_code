@@ -1,6 +1,6 @@
 library(tidyverse)
 
-x <- read_lines("solutions_2017/day01_input.txt") %>% 
+x <- read_lines("2017/day01_input.txt") %>% 
   str_split("") %>% 
   .[[1]] %>% 
   as.numeric()
