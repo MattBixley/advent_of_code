@@ -10,21 +10,17 @@ for(i in seq_along(w)){
   elves[[i]] <- as.integer(input[(w[i]+1):z])
 }
 
-#206152
 
 # Part 1 
 calories <- sapply(elves,sum)
 out1 <- max(calories)
 
+cat("Puzzle 1 solution:", out1, fill = TRUE)
+
 # Part 2 
 out2 <- sort(calories, decreasing = TRUE)[1:3] |> 
   sum()
 
-# Results
-# part 1
-cat("Puzzle 1 solution:", out1, fill = TRUE)
-
-# part 2
 cat("Puzzle 2 solution:", out2, fill = TRUE)
 
 
