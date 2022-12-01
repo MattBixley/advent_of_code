@@ -1,6 +1,6 @@
 library(tidyverse)
 
-rectangles <- tibble(x = read_lines('./solutions_2018/day03_input.txt')) %>% 
+rectangles <- tibble(x = read_lines('2018/day03_input.txt')) %>% 
   extract(x, c("left", "top", "width", "height"), regex = "#\\d+ @ (\\d+),(\\d+): (\\d+)x(\\d+)", convert = TRUE) %>% 
   mutate(right = left + width - 1, bottom = top + height - 1) %>% 
   select(-c(width, height))
