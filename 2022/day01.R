@@ -1,21 +1,23 @@
 library(tidyverse)
-library(plyr)
 
-input <- readLines('2022/day01_input.txt')
+input <- read_lines("2022/day01_input.txt")
 
-seps <- which(input == "")
+w <- c(0,which(input==""))
+elves <- list()
 
-start <- c(1, seps[-length(seps)] + 1)
-end <- seps
+for(i in seq_along(w)){
+  z <- ifelse(i == length(w), length(input), w[i+1]-1)
+  elves[[i]] <- as.integer(input[(w[i]+1):z])
+}
 
-inputs <- purrr::map2(start, end, ~as.numeric(input[.x:(.y - 1)]))
+#206152
 
 # Part 1 
-all_sums <- sapply(inputs, sum)
-out1 <- max(all_sums)
+calories <- sapply(elves,sum)
+out1 <- max(calories)
 
 # Part 2 
-out2 <- sort(all_sums, decreasing = TRUE)[1:3] |> 
+out2 <- sort(calories, decreasing = TRUE)[1:3] |> 
   sum()
 
 # Results
@@ -24,3 +26,6 @@ cat("Puzzle 1 solution:", out1, fill = TRUE)
 
 # part 2
 cat("Puzzle 2 solution:", out2, fill = TRUE)
+
+
+
