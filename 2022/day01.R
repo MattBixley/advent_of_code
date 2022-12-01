@@ -1,11 +1,6 @@
 library(tidyverse)
 library(plyr)
 
-<<<<<<< HEAD
-=======
-input <- read_lines("2022/day01_input.txt") |>
-    as.numeric()
->>>>>>> e50921d6745d19fd389eb006acabddd52385a740
 input <- readLines('2022/day01_input.txt')
 
 seps <- which(input == "")
