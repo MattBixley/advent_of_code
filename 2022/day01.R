@@ -1,27 +1,23 @@
 library(tidyverse)
 
-input <- read_lines("2022/day01_input.txt")
+input <- tibble(read_lines("2022/day02_input.txt") |>
+                  as.numeric())
+names(input) <- "x"
 
-w <- c(0,which(input==""))
-elves <- list()
-
-for(i in seq_along(w)){
-  z <- ifelse(i == length(w), length(input), w[i+1]-1)
-  elves[[i]] <- as.integer(input[(w[i]+1):z])
-}
-
+calories <- input |>
+  mutate(group = cumsum(is.na(x))) |>
+  count(group, wt = x)
 
 # Part 1 
-calories <- sapply(elves,sum)
 out1 <- max(calories)
 
 cat("Puzzle 1 solution:", out1, fill = TRUE)
 
 # Part 2 
-out2 <- sort(calories, decreasing = TRUE)[1:3] |> 
-  sum()
+out2 <- calories |>
+  arrange(desc(n)) |>
+  head(3) |>
+  summarize(sum(n))
 
-cat("Puzzle 2 solution:", out2, fill = TRUE)
-
-
+cat("Puzzle 2 solution:", out2[[1]], fill = TRUE)
 
