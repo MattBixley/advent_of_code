@@ -1,33 +1,36 @@
-data12 <- as.character(unlist(read.fwf("2022/day12_input.txt", rep(1, 162))))
-
-map_k <- function(k) {
-  m <- k %% 41
-  k + c(if (k <= 6642L - 41L) 41 , if (k > 41) -41, if (m != 1L) -1L, if (m != 0L) 1L)
+map <- do.call(rbind,strsplit(readLines("2022/day12_input.txt"),""))
+start <- which(map=="S",arr.ind=T)
+end <- which(map=="E",arr.ind=T)
+map[map=="S"]<-"a"
+map[map=="E"]<-"z"
+all_coords <- expand.grid(1:nrow(map),1:ncol(map))
+nb <- function(x,y){
+  coords <- rbind(c(x-1,y),
+                  c(x+1,y),
+                  c(x,y-1),
+                  c(x,y+1))
+  coords <- coords[!coords[,1]%in%c(0,nrow(map)+1)&!coords[,2]%in%c(0,ncol(map)+1),]
+  w <- which(letters==map[x,y])
+  l <- apply(coords,1,function(z)which(letters==map[z[1],z[2]]))
+  coords <- coords[l-w<=1,,drop=FALSE]
+  if(nrow(coords)){
+    ids <- apply(coords,1,function(z)which(all_coords[,1]==z[1]&all_coords[,2]==z[2]))
+    id <- which(all_coords[,1]==x&all_coords[,2]==y)
+    return(data.frame("from"=id,"to"=ids))
+  }else{return(NULL)}
 }
-
-gr <- unname(setNames(c(1:26, 1, 26), c(letters, "S", "E"))[data12])
-lookup <- lapply(seq_along(gr), map_k)
-
-find_way <- function(tar) {
-  q <- collections::priority_queue(which(data12 == "E"), priorities = 0L)
-  dist <- c(rep.int(10000L, length(gr)))
-  dist[which(data12 == "E")] <- 0L
-  
-  while (q$size() > 0) {
-    cur <- q$pop()
-    if (any(cur == tar)) return(dist[cur])
-    cur_dist <- dist[cur]
-    for (ne in lookup[[cur]][gr[lookup[[cur]]] + 1L >= gr[cur]]) {
-      if (dist[ne] > cur_dist + 1L) {
-        dist[ne] <- cur_dist + 1L
-        q$push(ne, priority = -cur_dist - 1L)
-      }
-    }
-  }
-}
-
-#part1----
-find_way(which(data12 == "S"))  
-
-#part2-----
-find_way(which(gr == 1))  
+library(igraph)
+edg <- do.call(rbind,apply(all_coords,1,function(x)nb(x[1],x[2])))
+g <- graph_from_edgelist(as.matrix(edg)) #Make a directed graph with list of possible paths
+distances(g,
+          which(all_coords[,1]==start[1]&all_coords[,2]==start[2]),
+          which(all_coords[,1]==end[1]&all_coords[,2]==end[2]),mode="out")
+#468
+sp <- apply(which(map=="a",arr.ind=T),1,function(x){
+  which(all_coords[,1]==x[1]&all_coords[,2]==x[2])
+})
+d<-distances(g,
+             sp,
+             which(all_coords[,1]==end[1]&all_coords[,2]==end[2]),mode="out")
+min(d)
+#459
