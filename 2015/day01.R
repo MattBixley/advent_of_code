@@ -1,28 +1,15 @@
-library(tidyverse)
+#part 1
+input <- readLines("2015/input01.txt")
+chars <- strsplit(input, "")[[1]]
 
-input <- read_lines("2015/input01.txt")
+key <- c("(" = 1, ")" = -1)
 
-input %>% 
-  str_split("") %>% .[[1]] %>% 
-  tibble(x = .) %>% 
-  count(x) %>% 
-  pivot_wider(names_from = x, values_from = n) %>% 
-  mutate(res = `(` - `)`)
+sum(key[chars])
 
-# part 2
+#part 2
+input <- readLines("2015/input01.txt")
+chars <- strsplit(input, "")[[1]]
 
-directions <- tribble(
-  ~direction, ~h,
-  "(", 1,
-  ")", -1
-)
+key <- c("(" = 1, ")" = -1)
 
-tibble(direction = input) %>% 
-  separate_rows(direction, sep = "") %>% 
-  filter(direction != "") %>% 
-  mutate(idx = 1:n()) %>% 
-  inner_join(directions) %>% 
-  mutate(floor = cumsum(h)) %>% 
-  filter(floor == -1) %>% 
-  head(1) %>% 
-  pull(idx)
+min(which(cumsum(key[chars]) < 0))
