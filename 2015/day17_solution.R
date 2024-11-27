@@ -1,8 +1,11 @@
-# Load necessary libraries
 library(tidyverse)
 
-# Read input data
-input <- read_lines("input.txt")
+# Read the input file
+input <- read_lines('2015/day17_input.txt')
 
-# Your code here
+# Part 1
+# Your solution code for Part 1 here
+
+# Part 2
+# Your solution code for Part 2 here
 
