@@ -19,3 +19,8 @@ day 13 https://github.com/plannapus/Advent_of_Code
 
 ## 2015 -> 
 https://emilhvitfeldt.github.io/rstats-adventofcode/
+
+## 2022 https://emilhvitfeldt.github.io/rstats-adventofcode/2022.html
+
+
+
