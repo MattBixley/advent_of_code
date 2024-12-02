@@ -19,5 +19,14 @@ diff <- abs(right - left)
 sum(diff)
 
 # Part 2
-# Your solution code for Part 2 here
+input <- readr::read_delim(
+  "2024/day1_input.txt", 
+  delim = "   ", 
+  col_names = FALSE,
+  show_col_types = FALSE
+)
+
+counts <- table(input$X2)[as.character(input$X1)]
+
+sum(abs(input$X1 * counts), na.rm = TRUE)
 
