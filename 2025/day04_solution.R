@@ -57,5 +57,17 @@ result1 <- count_accessible(grid)
 cat("Part 1:", result1, "\n")
 
 # -- Part 2 -------------------------------------------------------------------
-# (Part 2 unlocks after submitting Part 1)
-# cat("Part 2:", result2, "\n")
+# Iteratively remove accessible rolls until none remain; count total removed.
+
+grid2 <- grid
+total_removed <- 0L
+repeat {
+  rolls2 <- (grid2 == "@") * 1L
+  cnt2 <- neighbor_count(rolls2)
+  accessible2 <- rolls2 == 1L & cnt2 < 4L
+  n_acc <- sum(accessible2)
+  if (n_acc == 0L) break
+  grid2[accessible2] <- "."
+  total_removed <- total_removed + n_acc
+}
+cat("Part 2:", total_removed, "\n")

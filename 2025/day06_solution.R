@@ -38,3 +38,23 @@ part1 <- sum(results)
 cat("Part 1:", format(part1, scientific = FALSE), "\n")
 
 # -- Part 2 -------------------------------------------------------------------
+# Columns within each problem are read right-to-left; each vertical column = one number.
+# Digits read top-to-bottom (MSB first) within each number-column.
+
+solve_p2 <- function(cols) {
+  nums <- rev(cols) |>
+    map(\(c) {
+      digits <- chars[1:(n - 1), c]
+      digits <- digits[digits != " "]
+      if (length(digits) == 0L) return(NULL)
+      as.numeric(paste(digits, collapse = ""))
+    }) |>
+    compact() |>
+    unlist()
+
+  op <- str_trim(paste(chars[n, cols], collapse = "")) |> str_sub(1, 1)
+  if (op == "*") prod(nums) else sum(nums)
+}
+
+part2 <- sum(map_dbl(problems, solve_p2))
+cat("Part 2:", format(part2, scientific = FALSE), "\n")

@@ -33,5 +33,23 @@ result1 <- sum(joltages)
 cat("Part 1:", result1, "\n")
 
 # -- Part 2 -------------------------------------------------------------------
-# Part 2 not yet available — submit Part 1 first.
-cat("Part 2:", "N/A (submit Part 1 to unlock)\n")
+# Pick exactly 12 digits (maintaining order) to maximise the 12-digit number.
+# Greedy: for position i, pick max digit in range [start, n - (k - i)].
+
+max_k_digits <- function(line, k = 12L) {
+  digits <- as.integer(str_split(line, "")[[1]])
+  n <- length(digits)
+  if (n <= k) return(as.numeric(paste(digits, collapse = "")))
+  result <- integer(k)
+  start <- 1L
+  for (i in seq_len(k)) {
+    window <- digits[start:(n - k + i)]
+    best <- which.max(window)
+    result[i] <- window[best]
+    start <- start + best
+  }
+  as.numeric(paste(result, collapse = ""))
+}
+
+part2 <- sum(map_dbl(input, max_k_digits))
+cat("Part 2:", format(part2, scientific = FALSE), "\n")
