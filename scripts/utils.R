@@ -55,3 +55,34 @@ parse.group <- function(regex,input) { #old faithful (from regexpr help file)
   colnames(m) <- attr(result, "capture.names")
   m
 }
+
+# -- Tidyverse-friendly utilities (2025+) -------------------------------------
+
+# Parse a character grid into a tibble with x, y, value columns.
+# x increases left-to-right, y increases top-to-bottom (row 1 = top).
+parse_grid <- function(input) {
+  tibble(line = input) |>
+    mutate(y = row_number()) |>
+    mutate(chars = str_split(line, "")) |>
+    unnest_longer(chars, indices_to = "x") |>
+    rename(value = chars) |>
+    select(x, y, value)
+}
+
+# Manhattan distance between two points (defaults to origin).
+manhattan <- function(x1, y1, x2 = 0, y2 = 0) abs(x1 - x2) + abs(y1 - y2)
+
+# Count occurrences of each element; returns a named integer vector.
+count_vals <- function(x) {
+  tbl <- table(x)
+  setNames(as.integer(tbl), names(tbl))
+}
+
+# Read an input file and split into paragraphs (groups separated by blank lines).
+# Returns a list of character vectors, one per paragraph.
+read_paragraphs <- function(path) {
+  lines <- read_lines(path)
+  split(lines, cumsum(lines == "")) |>
+    purrr::map(~ .x[.x != ""]) |>
+    purrr::keep(~ length(.x) > 0)
+}
