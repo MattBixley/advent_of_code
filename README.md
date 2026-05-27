@@ -1,8 +1,14 @@
 # Advent of Code — R / Tidyverse Solutions
 
-Personal solutions to [Advent of Code](https://adventofcode.com) puzzles, solved primarily in R with tidyverse. Years 2015 – 2024 complete (to varying degrees); 2025 scaffolded and ready.
+![R](https://img.shields.io/badge/R-276DC3?logo=r&logoColor=white&style=flat-square)
+![tidyverse](https://img.shields.io/badge/tidyverse-1A162D?logo=tidyverse&logoColor=white&style=flat-square)
+![Claude](https://img.shields.io/badge/Claude_AI-assisted-black?logo=anthropic&logoColor=white&style=flat-square)
+
+Personal solutions to [Advent of Code](https://adventofcode.com) puzzles, solved primarily in R with tidyverse. Years 2015 – 2025 complete (to varying degrees).
 
 **Coverage:** 2015 | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 | 2025
+
+> **Note:** Solutions for 2023–2025 were completed in part with [Claude Code](https://claude.ai/code) (Anthropic) as an experiment in AI-assisted competitive programming. Claude wrote and debugged solutions iteratively within a session while I verified correctness against the AoC judge — a test of its ability to reason about algorithms, R-specific quirks, and puzzle logic.
 
 ---
 
@@ -290,18 +296,16 @@ A minimal Rcpp inline function typically gives 10–100x speedup over an equival
 
 ## Progress
 
-| Year | Days | Stars |
-|------|------|-------|
-| 2025 | 12 | ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ |
-| 2024 | 12 | ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ |
-| 2023 | 12 | ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ |
-| 2022 | 13 | ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ |
-| 2021 | 25 | ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ |
-| 2020 | 25 | ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ |
-| 2019 | 10 | ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ |
-| 2018 | 2 | ⭐⭐⭐⭐ |
-| 2017 | 5 | ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ |
-| 2016 | 3 | ⭐⭐⭐⭐⭐⭐ |
-| 2015 | 25 | ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ |
-
-Stars assume 2 per completed day. Update as you go.
+| Year | Days | Stars | Notes |
+|------|------|-------|-------|
+| 2025 | 12 | ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ | Claude AI assisted |
+| 2024 | 25 | ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ | Claude AI assisted (days 6–25) |
+| 2023 | 25 | ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ | Claude AI assisted (days 7–25) |
+| 2022 | 13 | ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ | |
+| 2021 | 25 | ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ | |
+| 2020 | 25 | ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ | |
+| 2019 | 10 | ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ | |
+| 2018 | 2 | ⭐⭐⭐⭐ | |
+| 2017 | 5 | ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ | |
+| 2016 | 3 | ⭐⭐⭐⭐⭐⭐ | |
+| 2015 | 25 | ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ | |

@@ -1,66 +1,46 @@
 library(tidyverse)
-library(adventdrob)
+source("scripts/utils.R")
 
-#usethis::edit_r_environ("project")
+input <- read_lines("2023/day08_input.txt")
 
-input <- advent_input(7, 2023)
-input
+directions <- str_split(input[1], "")[[1]]
 
-hands <- input |>
-  separate(x, c("hand", "bid"), convert = T)
+network <- tibble(line = input[-(1:2)]) |>
+  mutate(
+    node  = str_extract(line, "^\\w+"),
+    left  = str_extract(line, "(?<=\\()\\w+"),
+    right = str_extract(line, "(?<=, )\\w+")
+  ) |>
+  select(node, left, right)
 
-# part 1
-ranks <- str_split("23456789TJKA", "")[[1]]
+# Build lookup as named list for O(1) access
+net <- list()
+for (i in seq_len(nrow(network))) {
+  net[[network$node[i]]] <- c(network$left[i], network$right[i])
+}
 
-hand_types <- hands |>
-  mutate(card = str_split(hand, "")) |>
-  mutate(rank_str = map_chr(card, 
-                            ~ paste0(LETTERS[match(.,ranks)], 
-                                   collapse=""))) |>
-  unnest(cols = c(card)) |>
-  mutate(i=row_number()) |>
-  crossing(replace_joker_with = ranks) |>
-  mutate(card = ifelse(card == "J", replace_joker_with, card)) |>
-  count(hand, bid, rank_str, replace_joker_with, card, sort = T) |>
-  group_by(hand, bid, rank_str, replace_joker_with) |>
-  #count(hand, bid, rank_str) |>
-  #group_by(hand, bid, rank_str, card) |>
-  summarize(distribution = paste0(n, collapse = ""), 
-            .groups == "drop") |>
-  mutate(type = match(distribution, 
-             c("11111", "2111", "221", "311", "32", "41", "5"))) |>
-  arrange(desc(type)) |>
-  distinct(hand, .keep_all = T)
+steps_to_z <- function(start, end_fn) {
+  node <- start
+  n <- length(directions)
+  steps <- 0L
+  repeat {
+    d <- directions[(steps %% n) + 1L]
+    node <- if (d == "L") net[[node]][1] else net[[node]][2]
+    steps <- steps + 1L
+    if (end_fn(node)) return(steps)
+  }
+}
 
-hand_types |>
-  arrange(type, rank_str) |>
-  summarise(sum(bid * row_number()))
-  
+# Part 1
+result1 <- steps_to_z("AAA", function(n) n == "ZZZ")
+cat("Part 1:", result1, "\n")
 
-# part 2
-ranks <- str_split("J23456789TKA", "")[[1]]
+# Part 2 - LCM of cycle lengths
+starts <- network$node[str_ends(network$node, "A")]
+cycle_lengths <- map_dbl(starts, ~ steps_to_z(.x, function(n) str_ends(n, "Z")))
 
-hand_types <- hands |>
-  mutate(card = str_split(hand, "")) |>
-  mutate(rank_str = map_chr(card, 
-                            ~ paste0(LETTERS[match(.,ranks)], 
-                                     collapse=""))) |>
-  unnest(cols = c(card)) |>
-  # insert part 2 bits here
-  mutate(i=row_number()) |>
-  crossing(replace_joker_with = ranks) |>
-  mutate(card = ifelse(card == "J", replace_joker_with, card)) |>
-  count(hand, bid, rank_str, replace_joker_with, card) |>
-  group_by(hand, bid, rank_str, replace_joker_with) |>
-  # end part 2
-  summarize(distribution = paste0(n, collapse = ""), 
-            .groups =="drop") |>
-  mutate(type = match(distribution, 
-                      c("11111", "2111", "221", "311", "32", "41", "5"))) |>
-  arrange(desc(type)) |>
-  distinct(hand, .keep_all = T)
+lcm2 <- function(a, b) a / gcd(a, b) * b
+gcd <- function(a, b) if (b == 0) a else gcd(b, a %% b)
 
-hand_types |>
-  arrange(type, rank_str) |>
-  summarise(sum(bid * row_number()))
-
+result2 <- format(Reduce(lcm2, cycle_lengths), scientific = FALSE)
+cat("Part 2:", result2, "\n")

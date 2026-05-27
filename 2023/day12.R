@@ -1,66 +1,71 @@
 library(tidyverse)
-library(adventdrob)
+source("scripts/utils.R")
 
-#usethis::edit_r_environ("project")
+input <- read_lines("2023/day12_input.txt")
 
-input <- advent_input(7, 2023)
-input
+rows <- tibble(line = input) |>
+  mutate(
+    pattern = str_extract(line, "^\\S+"),
+    groups  = map(str_extract(line, "(?<= ).+"),
+                  ~ as.integer(str_split(.x, ",")[[1]]))
+  )
 
-hands <- input |>
-  separate(x, c("hand", "bid"), convert = T)
+count_arrangements <- function(pattern, groups) {
+  chars   <- strsplit(pattern, "")[[1]]
+  pat_len <- length(chars)
+  grp_len <- length(groups)
 
-# part 1
-ranks <- str_split("23456789TJKA", "")[[1]]
+  # Precompute: can_place[i] = can we start a group at position i?
+  # (no '.' in chars[i..(i+g-1)] and char after is not '#')
+  # Done lazily via memo; precompute prefix "no dot" for fast range check
+  has_dot <- chars == "."
+  # no_dot_from[i] = length of dot-free run starting at i
+  no_dot_run <- integer(pat_len + 1L)
+  for (i in rev(seq_len(pat_len))) {
+    no_dot_run[i] <- if (has_dot[i]) 0L else no_dot_run[i + 1L] + 1L
+  }
 
-hand_types <- hands |>
-  mutate(card = str_split(hand, "")) |>
-  mutate(rank_str = map_chr(card, 
-                            ~ paste0(LETTERS[match(.,ranks)], 
-                                   collapse=""))) |>
-  unnest(cols = c(card)) |>
-  mutate(i=row_number()) |>
-  crossing(replace_joker_with = ranks) |>
-  mutate(card = ifelse(card == "J", replace_joker_with, card)) |>
-  count(hand, bid, rank_str, replace_joker_with, card, sort = T) |>
-  group_by(hand, bid, rank_str, replace_joker_with) |>
-  #count(hand, bid, rank_str) |>
-  #group_by(hand, bid, rank_str, card) |>
-  summarize(distribution = paste0(n, collapse = ""), 
-            .groups == "drop") |>
-  mutate(type = match(distribution, 
-             c("11111", "2111", "221", "311", "32", "41", "5"))) |>
-  arrange(desc(type)) |>
-  distinct(hand, .keep_all = T)
+  memo <- matrix(-1.0, nrow = pat_len + 2L, ncol = grp_len + 2L)
 
-hand_types |>
-  arrange(type, rank_str) |>
-  summarise(sum(bid * row_number()))
-  
+  go <- function(pi, gi) {
+    if (memo[pi, gi] >= 0) return(memo[pi, gi])
 
-# part 2
-ranks <- str_split("J23456789TKA", "")[[1]]
+    if (gi > grp_len) {
+      result <- if (pi > pat_len || all(chars[pi:pat_len] != "#")) 1.0 else 0.0
+      memo[pi, gi] <<- result; return(result)
+    }
+    if (pi > pat_len) { memo[pi, gi] <<- 0.0; return(0.0) }
 
-hand_types <- hands |>
-  mutate(card = str_split(hand, "")) |>
-  mutate(rank_str = map_chr(card, 
-                            ~ paste0(LETTERS[match(.,ranks)], 
-                                     collapse=""))) |>
-  unnest(cols = c(card)) |>
-  # insert part 2 bits here
-  mutate(i=row_number()) |>
-  crossing(replace_joker_with = ranks) |>
-  mutate(card = ifelse(card == "J", replace_joker_with, card)) |>
-  count(hand, bid, rank_str, replace_joker_with, card) |>
-  group_by(hand, bid, rank_str, replace_joker_with) |>
-  # end part 2
-  summarize(distribution = paste0(n, collapse = ""), 
-            .groups =="drop") |>
-  mutate(type = match(distribution, 
-                      c("11111", "2111", "221", "311", "32", "41", "5"))) |>
-  arrange(desc(type)) |>
-  distinct(hand, .keep_all = T)
+    result <- 0.0
+    ch <- chars[pi]
 
-hand_types |>
-  arrange(type, rank_str) |>
-  summarise(sum(bid * row_number()))
+    if (ch != "#") result <- result + go(pi + 1L, gi)
 
+    if (ch != ".") {
+      g   <- groups[gi]
+      end <- pi + g - 1L
+      if (end <= pat_len && no_dot_run[pi] >= g) {
+        after_ok <- end == pat_len || chars[end + 1L] != "#"
+        if (after_ok) result <- result + go(end + 2L, gi + 1L)
+      }
+    }
+
+    memo[pi, gi] <<- result
+    result
+  }
+
+  go(1L, 1L)
+}
+
+result1 <- sum(map2_dbl(rows$pattern, rows$groups, count_arrangements))
+cat("Part 1:", result1, "\n")
+
+# Part 2: unfold 5x
+rows_p2 <- rows |>
+  mutate(
+    pattern = map_chr(pattern, ~ paste(rep(.x, 5), collapse = "?")),
+    groups  = map(groups, ~ rep(.x, 5))
+  )
+
+result2 <- sum(map2_dbl(rows_p2$pattern, rows_p2$groups, count_arrangements))
+cat("Part 2:", format(result2, scientific = FALSE), "\n")

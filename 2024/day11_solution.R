@@ -42,9 +42,9 @@ blink <- function(tbl) {
       left  = if_else(nchar(left)  == 0L, "0", left),
       right = if_else(nchar(right) == 0L, "0", right)
     ) |>
-    # Each split stone becomes two rows
-    pivot_longer(c(left, right), values_to = "stone") |>
-    transmute(stone, n)
+    select(n, left, right) |>
+    pivot_longer(c(left, right), values_to = "stone", names_to = NULL) |>
+    select(stone, n)
 
   multiplied <- tbl |>
     filter(rule == "multiply") |>

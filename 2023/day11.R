@@ -1,66 +1,35 @@
 library(tidyverse)
-library(adventdrob)
+source("scripts/utils.R")
 
-#usethis::edit_r_environ("project")
+input <- read_lines("2023/day11_input.txt")
 
-input <- advent_input(7, 2023)
-input
+grid <- parse_grid(input)
+galaxies <- grid |> filter(value == "#")
 
-hands <- input |>
-  separate(x, c("hand", "bid"), convert = T)
+all_rows <- seq_len(max(grid$y))
+all_cols <- seq_len(max(grid$x))
+empty_rows <- setdiff(all_rows, unique(galaxies$y))
+empty_cols <- setdiff(all_cols, unique(galaxies$x))
 
-# part 1
-ranks <- str_split("23456789TJKA", "")[[1]]
+pair_distance <- function(factor) {
+  gal <- galaxies |> select(x, y)
+  n <- nrow(gal)
+  total <- 0
+  for (i in seq_len(n - 1)) {
+    for (j in seq(i + 1, n)) {
+      r1 <- min(gal$y[i], gal$y[j]); r2 <- max(gal$y[i], gal$y[j])
+      c1 <- min(gal$x[i], gal$x[j]); c2 <- max(gal$x[i], gal$x[j])
+      er <- sum(empty_rows > r1 & empty_rows < r2)
+      ec <- sum(empty_cols > c1 & empty_cols < c2)
+      dist <- (r2 - r1) + (c2 - c1) + (factor - 1) * (er + ec)
+      total <- total + dist
+    }
+  }
+  total
+}
 
-hand_types <- hands |>
-  mutate(card = str_split(hand, "")) |>
-  mutate(rank_str = map_chr(card, 
-                            ~ paste0(LETTERS[match(.,ranks)], 
-                                   collapse=""))) |>
-  unnest(cols = c(card)) |>
-  mutate(i=row_number()) |>
-  crossing(replace_joker_with = ranks) |>
-  mutate(card = ifelse(card == "J", replace_joker_with, card)) |>
-  count(hand, bid, rank_str, replace_joker_with, card, sort = T) |>
-  group_by(hand, bid, rank_str, replace_joker_with) |>
-  #count(hand, bid, rank_str) |>
-  #group_by(hand, bid, rank_str, card) |>
-  summarize(distribution = paste0(n, collapse = ""), 
-            .groups == "drop") |>
-  mutate(type = match(distribution, 
-             c("11111", "2111", "221", "311", "32", "41", "5"))) |>
-  arrange(desc(type)) |>
-  distinct(hand, .keep_all = T)
+result1 <- pair_distance(2)
+cat("Part 1:", result1, "\n")
 
-hand_types |>
-  arrange(type, rank_str) |>
-  summarise(sum(bid * row_number()))
-  
-
-# part 2
-ranks <- str_split("J23456789TKA", "")[[1]]
-
-hand_types <- hands |>
-  mutate(card = str_split(hand, "")) |>
-  mutate(rank_str = map_chr(card, 
-                            ~ paste0(LETTERS[match(.,ranks)], 
-                                     collapse=""))) |>
-  unnest(cols = c(card)) |>
-  # insert part 2 bits here
-  mutate(i=row_number()) |>
-  crossing(replace_joker_with = ranks) |>
-  mutate(card = ifelse(card == "J", replace_joker_with, card)) |>
-  count(hand, bid, rank_str, replace_joker_with, card) |>
-  group_by(hand, bid, rank_str, replace_joker_with) |>
-  # end part 2
-  summarize(distribution = paste0(n, collapse = ""), 
-            .groups =="drop") |>
-  mutate(type = match(distribution, 
-                      c("11111", "2111", "221", "311", "32", "41", "5"))) |>
-  arrange(desc(type)) |>
-  distinct(hand, .keep_all = T)
-
-hand_types |>
-  arrange(type, rank_str) |>
-  summarise(sum(bid * row_number()))
-
+result2 <- pair_distance(1000000)
+cat("Part 2:", format(result2, scientific = FALSE), "\n")

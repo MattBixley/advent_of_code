@@ -1,66 +1,31 @@
 library(tidyverse)
-library(adventdrob)
+source("scripts/utils.R")
 
-#usethis::edit_r_environ("project")
+input <- read_lines("2023/day09_input.txt")
 
-input <- advent_input(7, 2023)
-input
+sequences <- map(input, ~ as.numeric(str_split(.x, " ")[[1]]))
 
-hands <- input |>
-  separate(x, c("hand", "bid"), convert = T)
+extrapolate_next <- function(seq) {
+  layers <- list(seq)
+  while (!all(layers[[length(layers)]] == 0)) {
+    last <- layers[[length(layers)]]
+    layers[[length(layers) + 1]] <- diff(last)
+  }
+  sum(map_dbl(layers, ~ tail(.x, 1)))
+}
 
-# part 1
-ranks <- str_split("23456789TJKA", "")[[1]]
+extrapolate_prev <- function(seq) {
+  layers <- list(seq)
+  while (!all(layers[[length(layers)]] == 0)) {
+    last <- layers[[length(layers)]]
+    layers[[length(layers) + 1]] <- diff(last)
+  }
+  firsts <- map_dbl(layers, ~ .x[1])
+  Reduce(function(acc, x) x - acc, rev(firsts), 0)
+}
 
-hand_types <- hands |>
-  mutate(card = str_split(hand, "")) |>
-  mutate(rank_str = map_chr(card, 
-                            ~ paste0(LETTERS[match(.,ranks)], 
-                                   collapse=""))) |>
-  unnest(cols = c(card)) |>
-  mutate(i=row_number()) |>
-  crossing(replace_joker_with = ranks) |>
-  mutate(card = ifelse(card == "J", replace_joker_with, card)) |>
-  count(hand, bid, rank_str, replace_joker_with, card, sort = T) |>
-  group_by(hand, bid, rank_str, replace_joker_with) |>
-  #count(hand, bid, rank_str) |>
-  #group_by(hand, bid, rank_str, card) |>
-  summarize(distribution = paste0(n, collapse = ""), 
-            .groups == "drop") |>
-  mutate(type = match(distribution, 
-             c("11111", "2111", "221", "311", "32", "41", "5"))) |>
-  arrange(desc(type)) |>
-  distinct(hand, .keep_all = T)
+result1 <- sum(map_dbl(sequences, extrapolate_next))
+cat("Part 1:", result1, "\n")
 
-hand_types |>
-  arrange(type, rank_str) |>
-  summarise(sum(bid * row_number()))
-  
-
-# part 2
-ranks <- str_split("J23456789TKA", "")[[1]]
-
-hand_types <- hands |>
-  mutate(card = str_split(hand, "")) |>
-  mutate(rank_str = map_chr(card, 
-                            ~ paste0(LETTERS[match(.,ranks)], 
-                                     collapse=""))) |>
-  unnest(cols = c(card)) |>
-  # insert part 2 bits here
-  mutate(i=row_number()) |>
-  crossing(replace_joker_with = ranks) |>
-  mutate(card = ifelse(card == "J", replace_joker_with, card)) |>
-  count(hand, bid, rank_str, replace_joker_with, card) |>
-  group_by(hand, bid, rank_str, replace_joker_with) |>
-  # end part 2
-  summarize(distribution = paste0(n, collapse = ""), 
-            .groups =="drop") |>
-  mutate(type = match(distribution, 
-                      c("11111", "2111", "221", "311", "32", "41", "5"))) |>
-  arrange(desc(type)) |>
-  distinct(hand, .keep_all = T)
-
-hand_types |>
-  arrange(type, rank_str) |>
-  summarise(sum(bid * row_number()))
-
+result2 <- sum(map_dbl(sequences, extrapolate_prev))
+cat("Part 2:", result2, "\n")
